@@ -11,36 +11,57 @@ namespace ProyectoRoot.Controllers
         private List<Contacto> listContacto = new List<Contacto> {
         new Contacto { Id=1,Nombre="Luis",Apellido="Navarrete",Apodo="Luii",Ubicacion="Chile" },new Contacto { Id=2,Nombre="Ana",Apellido="Sánchez",Apodo="Ani",Ubicacion="Santiago" } };
 
-        // GET: api/<ContactoController>
         [HttpGet]
-        public IEnumerable<Contacto> Get()
+        public ActionResult<IEnumerable<Contacto>> Get()
         {
-            return listContacto;
+            return Ok(listContacto);
         }
 
-        // GET api/<ContactoController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<Contacto> Get(int id)
         {
-            return "value";
+            Contacto objContacto = listContacto.Find(x => x.Id == id);
+            if (objContacto == null)
+            {
+                return NotFound(new { Message = "El contacto no ha sido encontrado." });
+            }
+            return Ok(objContacto);
         }
 
-        // POST api/<ContactoController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<IEnumerable<Contacto>> Post(Contacto objContacto)
         {
+            listContacto.Add(objContacto);
+            return Ok(listContacto);
         }
 
-        // PUT api/<ContactoController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult<IEnumerable<Contacto>> Put(int id, Contacto objContacto)
         {
+            Contacto tmpContacto = listContacto.Find(x => x.Id == id);
+            if (tmpContacto == null)
+            {
+                return NotFound(new { Message = "El contacto no ha sido encontrado." });
+            }
+            tmpContacto.Nombre = objContacto.Nombre;
+            tmpContacto.Apellido = objContacto.Apellido;
+            tmpContacto.Apodo = objContacto.Apodo;
+            tmpContacto.Ubicacion = objContacto.Ubicacion;
+
+            return Ok(listContacto);
         }
 
-        // DELETE api/<ContactoController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult<IEnumerable<Contacto>> Delete(int id)
         {
+            Contacto tmpContacto = listContacto.Find(x => x.Id == id);
+            if (tmpContacto == null)
+            {
+                return NotFound(new { Message = "El contacto no ha sido encontrado." });
+            }
+            listContacto.Remove(tmpContacto);
+
+            return Ok(listContacto);
         }
     }
 }
